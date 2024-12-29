@@ -1,47 +1,51 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const carouselItems = document.querySelectorAll(".carousel-item");  
-  const carousel = document.querySelector("#carouselExampleControls"); 
+  // Select both carousels by their unique IDs
+  const carousels = document.querySelectorAll(".carousel");
 
-  const applySeeMoreToActiveItem = () => {
-      const activeItem = carousel.querySelector(".carousel-item.active");
-      const descriptions = activeItem.querySelectorAll(".card-text"); 
+  const applySeeMoreToActiveItem = (carousel) => {
+    const activeItem = carousel.querySelector(".carousel-item.active");
+    const descriptions = activeItem.querySelectorAll(".card-text");
 
-      descriptions.forEach((description) => {
-          const fullText = description.textContent.trim();
-          if (description.scrollHeight > description.offsetHeight) {
-              const showMore = document.createElement("span");
-              showMore.classList.add("show-more");
-              showMore.textContent = " See more";
-              description.textContent = fullText.slice(0, 50).trim() + "..."; 
-              description.appendChild(showMore);
+    descriptions.forEach((description) => {
+      const fullText = description.textContent.trim();
+      if (description.scrollHeight > description.offsetHeight) {
+        const showMore = document.createElement("span");
+        showMore.classList.add("show-more");
+        showMore.textContent = " See more";
+        description.textContent = fullText.slice(0, 50).trim() + "...";
+        description.appendChild(showMore);
 
-              showMore.addEventListener("click", () => {
-                  if (description.classList.contains("expanded")) {
-                      description.classList.remove("expanded");
-                      description.textContent = fullText.slice(0, 50).trim() + "...";
-                      description.appendChild(showMore);
-                      showMore.textContent = " See more";
-                  } else {
-                      description.classList.add("expanded");
-                      description.textContent = fullText;
-                      description.appendChild(showMore);
-                      showMore.textContent = " See less";
-                  }
-              });
+        showMore.addEventListener("click", () => {
+          if (description.classList.contains("expanded")) {
+            description.classList.remove("expanded");
+            description.textContent = fullText.slice(0, 50).trim() + "...";
+            description.appendChild(showMore);
+            showMore.textContent = " See more";
+          } else {
+            description.classList.add("expanded");
+            description.textContent = fullText;
+            description.appendChild(showMore);
+            showMore.textContent = " See less";
           }
-      });
+        });
+      }
+    });
   };
 
-  applySeeMoreToActiveItem();
+  // Apply the see more functionality to each carousel
+  carousels.forEach((carousel) => {
+    applySeeMoreToActiveItem(carousel);
 
-  carousel.addEventListener('slid.bs.carousel', () => {
-      applySeeMoreToActiveItem();
+    // Reapply when the carousel slides
+    carousel.addEventListener('slid.bs.carousel', () => {
+      applySeeMoreToActiveItem(carousel);
+    });
   });
 });
 
 function aosInit() {
   AOS.init({
-      duration: 600,
+      duration: 300,
       easing: 'ease-in-out',
       once: true,
       mirror: false
@@ -108,3 +112,37 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+var multipleCardCarousel = document.querySelector(
+    "#carouselExampleControls"
+  );
+  if (window.matchMedia("(min-width: 768px)").matches) {
+    var carousel = new bootstrap.Carousel(multipleCardCarousel, {
+      interval: false,
+    });
+    var carouselWidth = $(".carousel-inner")[0].scrollWidth;
+    var cardWidth = $(".carousel-item").width();
+    var scrollPosition = 0;
+    $("#carouselExampleControls .carousel-control-next").on("click", function () {
+      if (scrollPosition < carouselWidth - cardWidth * 4) {
+        scrollPosition += cardWidth;
+        $("#carouselExampleControls .carousel-inner").animate(
+          { scrollLeft: scrollPosition },
+          600
+        );
+      }
+    });
+    $("#carouselExampleControls .carousel-control-prev").on("click", function () {
+      if (scrollPosition > 0) {
+        scrollPosition -= cardWidth;
+        $("#carouselExampleControls .carousel-inner").animate(
+          { scrollLeft: scrollPosition },
+          600
+        );
+      }
+    });
+  } else {
+    $(multipleCardCarousel).addClass("slide");
+  }
+
+
+ 
